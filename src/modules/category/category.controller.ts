@@ -8,7 +8,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -21,6 +21,7 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Get()
+  // @Version('2')
   findAll(@Query() pageOptionsDto: PageOptionsDto) {
     return this.categoryService.getCategories(pageOptionsDto);
   }
@@ -30,6 +31,8 @@ export class CategoryController {
     return this.categoryService.findOne(id);
   }
 
+  @ApiBearerAuth('access-token') //edit here
+  @ApiOperation({ summary: 'Create category' })
   @Post()
   create(@Body() category: CreateCategoryDto) {
     return this.categoryService.create(category);

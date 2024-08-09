@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, Max, Min } from 'class-validator';
 
@@ -32,11 +32,18 @@ export class PageOptionsDto {
   @IsOptional()
   readonly take?: number = 10;
 
-  @ApiProperty({ required: false, name: 'search' })
+  @ApiPropertyOptional({ required: false })
   @IsOptional()
-  readonly search?: string;
+  readonly search?: string = '';
 
   get skip(): number {
     return (this.page - 1) * this.take;
   }
+
+  // constructor(page = 1, take = 10, order = Order.ASC, search = '') {
+  //   this.page = page;
+  //   this.take = take;
+  //   this.order = order;
+  //   this.search = search;
+  // }
 }

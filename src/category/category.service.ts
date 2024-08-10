@@ -4,14 +4,14 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { Category } from './category.schema';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { PageOptionsDto } from '../../core/dto/pagination.dto';
-import { PageMetaDto } from '../../core/dto/page-meta.dto';
-import { PageDto } from '../../core/dto/page.dto';
+import { PageOptionsDto } from '../shared/dto/pagination.dto';
+import { PageMetaDto } from '../shared/dto/page-meta.dto';
+import { PageDto } from '../shared/dto/page.dto';
 
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectModel(Category.name) private categoryModel: Model<Category>,
+    @InjectModel(Category.name) private categoryModel: Model<Category>
   ) {}
 
   async getCategories(pageOptions: PageOptionsDto): Promise<PageDto<Category>> {
@@ -37,21 +37,23 @@ export class CategoryService {
     return newCategory.save();
   }
 
-  async findOne(id: string): Promise<Category> {
-    return this.categoryModel.findById(id).exec();
+  async findOne(slug: string): Promise<Category> {
+    return this.categoryModel.findOne({ slug }).exec();
   }
 
-  async delete(id: string): Promise<Category> {
-    return this.categoryModel.findByIdAndDelete(id).exec();
+  async delete(slug: string): Promise<Category> {
+    return this.categoryModel.findOneAndDelete({ slug }).exec();
   }
 
-  async toggleStatus(id: string): Promise<Category> {
-    const category = await this.findOne(id);
+  async toggleStatus(slug: string): Promise<Category> {
+    const category = await this.findOne(slug);
     category.status = !category.status;
-    return this.categoryModel.findByIdAndUpdate(id, category).exec();
+    return this.categoryModel.findOneAndUpdate({ slug }, category).exec();
   }
 
-  async update(id: string, category: CreateCategoryDto): Promise<Category> {
-    return this.categoryModel.findByIdAndUpdate(id, category).exec();
+  async update(slug: string, category: CreateCategoryDto): Promise<Category> {
+    return this.categoryModel
+      .findOneAndUpdate({ slug }, category, { new: true })
+      .exec();
   }
 }

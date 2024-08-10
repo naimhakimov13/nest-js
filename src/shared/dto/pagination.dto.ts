@@ -39,11 +39,4 @@ export class PageOptionsDto {
   get skip(): number {
     return (this.page - 1) * this.take;
   }
-
-  // constructor(page = 1, take = 10, order = Order.ASC, search = '') {
-  //   this.page = page;
-  //   this.take = take;
-  //   this.order = order;
-  //   this.search = search;
-  // }
 }
